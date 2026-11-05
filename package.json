@@ -9,7 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.3.4",
     "canvas-confetti": "^1.9.4",
+    "lightningcss-darwin-arm64": "^1.33.0",
     "lucide-react": "^1.16.0",
     "next": "16.4.5",
     "react": "19.3.0",
