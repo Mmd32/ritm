@@ -3,7 +3,7 @@
 import React from 'react';
 import { Language, NumeralSystem, ThemeMode } from '@/types';
 import { TRANSLATIONS } from '@/lib/translations';
-import { Activity, Moon, Sun, Globe, Hash } from 'lucide-react';
+import { Moon, Sun, Globe, Hash, BookOpen } from 'lucide-react';
 
 interface NavbarProps {
   language: Language;
@@ -41,25 +41,37 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md border-b" style={{ backgroundColor: 'rgba(11, 15, 20, 0.85)', borderColor: 'var(--border)' }}>
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl border-b border-[var(--border)] bg-[var(--surface)]/90 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand */}
         <div
           onClick={() => onNavigate('calculator')}
-          className="flex items-center gap-2.5 cursor-pointer group"
+          className="flex items-center gap-3 cursor-pointer group select-none"
         >
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
-            style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
-          >
-            <Activity className="w-5 h-5 text-[#C8FF4D]" />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[var(--card)] border border-[var(--border)] group-hover:border-[var(--accent)] transition-all">
+            <svg
+              className="w-5 h-5 text-[var(--accent)]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-base tracking-tight leading-none text-[#F8FAFC]">
-              {language === 'fa' ? 'ریتم | RITM' : 'RITM'}
-            </span>
-            <span className="text-[10px] tracking-wider uppercase font-semibold text-[#94A3B8] mt-0.5">
-              Running Performance
+            <div className="flex items-center gap-1.5">
+              <span className="font-black text-lg tracking-tight leading-none text-[var(--ink)]">
+                {language === 'fa' ? 'ریتم' : 'RITM'}
+              </span>
+              <span className="text-[11px] font-mono tracking-widest text-[var(--accent)] font-extrabold uppercase">
+                {language === 'fa' ? 'VDOT' : 'PACE'}
+              </span>
+            </div>
+            <span className="text-[10px] tracking-wider uppercase font-semibold text-[var(--ink-faint)] mt-0.5">
+              Jack Daniels System
             </span>
           </div>
         </div>
@@ -72,10 +84,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all relative ${
                   isActive
-                    ? 'text-[#0B0F14] bg-[#C8FF4D] font-bold shadow-sm'
-                    : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/5'
+                    ? 'text-[var(--accent)] bg-[var(--card)] border border-[var(--border)]'
+                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--card)]/50'
                 }`}
               >
                 {item.label}
@@ -84,9 +96,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           })}
           <button
             onClick={onOpenMethodology}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#94A3B8] hover:text-[#C8FF4D] hover:bg-white/5 transition-all flex items-center gap-1"
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--ink-muted)] hover:text-[var(--accent)] hover:bg-[var(--card)]/50 transition-all flex items-center gap-1.5"
           >
-            {t.nav.methodology}
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>{t.nav.methodology}</span>
           </button>
         </nav>
 
@@ -96,35 +109,32 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={() => onNumeralSystemChange(numeralSystem === 'fa' ? 'en' : 'fa')}
             title={language === 'fa' ? 'تغییر ارقام به فارسی / انگلیسی' : 'Toggle Persian / English Numerals'}
-            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors border"
-            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all border border-[var(--border)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--accent)]"
           >
-            <Hash className="w-3.5 h-3.5 text-[#C8FF4D]" />
-            <span className="font-bold text-[11px]">{numeralSystem === 'fa' ? '۱۲۳' : '123'}</span>
+            <Hash className="w-3 h-3 text-[var(--ink-faint)]" />
+            <span>{numeralSystem === 'fa' ? '۱۲۳' : '123'}</span>
           </button>
 
           {/* Language Switch */}
           <button
             onClick={() => onLanguageChange(language === 'fa' ? 'en' : 'fa')}
-            title="تغییر زبان / Switch Language"
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors border"
-            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
+            title={language === 'fa' ? 'Switch to English' : 'تغییر به فارسی'}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all border border-[var(--border)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--accent)]"
           >
-            <Globe className="w-3.5 h-3.5 text-[#38BDF8]" />
-            <span className="font-semibold text-[11px]">{language === 'fa' ? 'English' : 'فارسی'}</span>
+            <Globe className="w-3 h-3 text-[var(--ink-faint)]" />
+            <span>{language === 'fa' ? 'EN' : 'فا'}</span>
           </button>
 
           {/* Theme Toggle */}
           <button
             onClick={onThemeToggle}
-            title={theme === 'dark' ? 'حالت روشن / Light Mode' : 'حالت تیره / Dark Mode'}
-            className="p-2 rounded-lg text-xs transition-colors border"
-            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
+            title={theme === 'dark' ? 'حالت روشن' : 'Dark Mode'}
+            className="p-2 rounded-lg text-xs font-medium transition-all border border-[var(--border)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--accent)]"
           >
             {theme === 'dark' ? (
-              <Sun className="w-4 h-4 text-[#FBBF24]" />
+              <Sun className="w-4 h-4 text-[var(--accent)]" />
             ) : (
-              <Moon className="w-4 h-4 text-[#38BDF8]" />
+              <Moon className="w-4 h-4 text-[var(--accent)]" />
             )}
           </button>
         </div>
@@ -132,4 +142,3 @@ export const Navbar: React.FC<NavbarProps> = ({
     </header>
   );
 };
-

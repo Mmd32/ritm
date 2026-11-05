@@ -5,8 +5,7 @@ import { Language, NumeralSystem, VDOTResult } from '@/types';
 import { formatDigits, formatDuration, formatPace, getConfidenceBadge } from '@/lib/vdot/formatters';
 import { TRANSLATIONS } from '@/lib/translations';
 import { saveRecordToHistory } from '@/lib/vdot/storage';
-import { Award, BookmarkCheck, Calendar, Check, Copy, Flame, HelpCircle, MapPin, Gauge, Timer, Zap } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { Check, Copy, Bookmark, BookmarkCheck, HelpCircle } from 'lucide-react';
 
 interface VDOTResultCardProps {
   result: VDOTResult;
@@ -26,11 +25,6 @@ export const VDOTResultCard: React.FC<VDOTResultCardProps> = ({
   const t = TRANSLATIONS[language];
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isCopied, setIsCopied] = useState<boolean>(false);
-  const [mounted, setMounted] = useState<boolean>(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const confidence = getConfidenceBadge(result.performanceType, result.inputDistanceMeters);
 
@@ -47,171 +41,145 @@ export const VDOTResultCard: React.FC<VDOTResultCardProps> = ({
 
     setIsSaved(true);
     if (onRecordSaved) onRecordSaved();
-
-    // Trigger celebration confetti
-    try {
-      confetti({
-        particleCount: 60,
-        spread: 60,
-        origin: { y: 0.7 },
-        colors: ['#C8FF4D', '#38BDF8', '#34D399', '#FBBF24'],
-      });
-    } catch {}
-
-    setTimeout(() => setIsSaved(false), 3000);
+    setTimeout(() => setIsSaved(false), 2500);
   };
 
   const handleCopy = () => {
-    const text = `RITM | VDOT: ${result.vdot} (${language === 'fa' ? result.inputDistanceLabelFa : result.inputDistanceLabelEn} in ${formatDuration(result.inputTimeSeconds, 'en')}) - https://ritm.run`;
+    const text = `RITM | VDOT: ${result.vdot.toFixed(1)} (${language === 'fa' ? result.inputDistanceLabelFa : result.inputDistanceLabelEn} in ${formatDuration(result.inputTimeSeconds, 'en')}) - https://ritm-rosy.vercel.app`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2500);
+      setTimeout(() => setIsCopied(false), 2000);
     }
   };
 
   return (
     <div
       id="vdot-result-dashboard"
-      className="max-w-4xl mx-auto rounded-3xl border p-6 sm:p-10 mb-12 shadow-2xl relative overflow-hidden transition-all duration-300"
-      style={{
-        backgroundColor: 'var(--surface)',
-        borderColor: 'rgba(200, 255, 77, 0.25)',
-      }}
+      className="max-w-4xl mx-auto rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-10 shadow-xl transition-all duration-200"
     >
-      {/* Decorative subtle athletic glow */}
-      <div
-        className="absolute -top-24 -right-24 w-80 h-80 rounded-full opacity-10 pointer-events-none blur-3xl"
-        style={{ backgroundColor: '#C8FF4D' }}
-      />
-
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
-        {/* Left / Center VDOT Big Display */}
-        <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-8">
+        {/* Main VDOT Numeric Telemetry Display */}
+        <div className="flex-1 flex flex-col justify-center">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs uppercase tracking-widest font-extrabold text-[#C8FF4D] flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5" />
+            <span className="text-[11px] font-mono uppercase tracking-widest font-black text-[var(--accent)] flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse" />
               {t.vdotCard.currentVdot}
             </span>
             <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-full border"
-              style={{
-                borderColor: confidence.color,
-                color: confidence.color,
-                backgroundColor: `${confidence.color}15`,
-              }}
+              className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--ink-muted)]"
             >
               {language === 'fa' ? confidence.levelFa : confidence.levelEn}
             </span>
           </div>
 
           <div className="flex items-baseline gap-3 my-1">
-            <span
-              className="text-6xl sm:text-8xl font-black tracking-tighter text-[#C8FF4D] num-mono drop-shadow-[0_4px_16px_rgba(200,255,77,0.2)]"
-            >
+            <span className="text-6xl sm:text-7xl lg:text-8xl font-black font-mono tracking-tight text-[var(--ink)] leading-none">
               {formatDigits(result.vdot.toFixed(1), numeralSystem)}
             </span>
-            <span className="text-sm sm:text-base font-bold text-[#94A3B8] uppercase tracking-wider">
-              Score
+            <span className="text-sm sm:text-base font-bold text-[var(--ink-faint)] uppercase tracking-wider font-mono">
+              VDOT
             </span>
           </div>
 
-          <p className="text-xs sm:text-sm text-[#94A3B8] max-w-sm mt-1 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[var(--ink-muted)] mt-2 font-normal leading-relaxed max-w-md">
             {t.vdotCard.assessmentSubtitle}
           </p>
 
-          <button
-            onClick={onOpenMethodology}
-            className="mt-3 text-xs font-semibold text-[#38BDF8] hover:underline flex items-center gap-1.5 transition-colors"
-          >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>{t.vdotCard.howCalculatedBtn}</span>
-          </button>
-        </div>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2.5 mt-6">
+            <button
+              onClick={handleSave}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer ${
+                isSaved
+                  ? 'bg-emerald-500/15 border-emerald-500 text-emerald-500'
+                  : 'bg-[var(--card)] border-[var(--border)] text-[var(--ink)] hover:border-[var(--accent)]'
+              }`}
+            >
+              {isSaved ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
+              <span>{isSaved ? (language === 'fa' ? 'ذخیره شد' : 'Saved') : t.vdotCard.saveToHistoryBtn}</span>
+            </button>
 
-        {/* Right Metric Grid */}
-        <div className="w-full lg:w-auto grid grid-cols-2 sm:grid-cols-2 gap-3 max-w-md">
-          {/* Distance */}
-          <div className="p-3.5 rounded-2xl border" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#94A3B8] mb-1">
-              <MapPin className="w-3.5 h-3.5 text-[#38BDF8]" />
-              <span>{t.vdotCard.recordedDistance}</span>
-            </div>
-            <div className="text-base sm:text-lg font-bold text-[#F8FAFC]">
-              {language === 'fa' ? result.inputDistanceLabelFa : result.inputDistanceLabelEn}
-            </div>
-          </div>
+            <button
+              onClick={handleCopy}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-[var(--border)] bg-[var(--card)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:border-[var(--ink-muted)] flex items-center gap-1.5 cursor-pointer"
+            >
+              {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{isCopied ? (language === 'fa' ? 'کپی شد' : 'Copied') : (language === 'fa' ? 'اشتراک‌گذاری' : 'Share')}</span>
+            </button>
 
-          {/* Time */}
-          <div className="p-3.5 rounded-2xl border" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#94A3B8] mb-1">
-              <Timer className="w-3.5 h-3.5 text-[#FBBF24]" />
-              <span>{t.vdotCard.recordedTime}</span>
-            </div>
-            <div className="text-base sm:text-lg font-bold text-[#F8FAFC] num-mono">
-              {formatDuration(result.inputTimeSeconds, numeralSystem, true)}
-            </div>
-          </div>
-
-          {/* Average Pace */}
-          <div className="p-3.5 rounded-2xl border" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#94A3B8] mb-1">
-              <Gauge className="w-3.5 h-3.5 text-[#34D399]" />
-              <span>{t.vdotCard.avgPace}</span>
-            </div>
-            <div className="text-base sm:text-lg font-bold text-[#F8FAFC] num-mono">
-              {formatPace(result.avgPaceSecPerKm, 'km', numeralSystem)}
-            </div>
-          </div>
-
-          {/* Average Speed */}
-          <div className="p-3.5 rounded-2xl border" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#94A3B8] mb-1">
-              <Flame className="w-3.5 h-3.5 text-[#FB923C]" />
-              <span>{t.vdotCard.avgSpeed}</span>
-            </div>
-            <div className="text-base sm:text-lg font-bold text-[#F8FAFC] num-mono">
-              {formatDigits(result.avgSpeedKmh.toFixed(2), numeralSystem)}{' '}
-              <span className="text-xs font-normal text-[#94A3B8]">km/h</span>
-            </div>
+            <button
+              onClick={onOpenMethodology}
+              className="px-3.5 py-2 rounded-xl text-xs font-medium text-[var(--ink-faint)] hover:text-[var(--accent)] transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>{t.vdotCard.howCalculatedBtn}</span>
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* Action Footer */}
-      <div className="mt-8 pt-6 border-t flex flex-wrap items-center justify-between gap-4" style={{ borderColor: 'var(--border)' }}>
-        <div className="text-xs text-[#94A3B8] flex items-center gap-1.5">
-          <Calendar className="w-3.5 h-3.5" />
-          <span>
-            {t.vdotCard.calcDate}:{' '}
-            {mounted
-              ? new Date(result.calculatedAt).toLocaleDateString(language === 'fa' ? 'fa-IR' : 'en-US')
-              : '2026/01/01'}
-          </span>
-        </div>
+        {/* 4-Cell Technical Telemetry Grid */}
+        <div className="w-full lg:w-80 grid grid-cols-2 gap-2.5 pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-r lg:rtl:border-r-0 lg:rtl:border-l border-[var(--border)] lg:pr-8 lg:rtl:pr-0 lg:rtl:pl-8">
+          {/* 1. Recorded Distance & Time */}
+          <div className="p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-faint)]">
+              {t.vdotCard.recordedDistance}
+            </span>
+            <div className="mt-2">
+              <span className="text-base font-black text-[var(--ink)] font-mono block">
+                {language === 'fa' ? result.inputDistanceLabelFa : result.inputDistanceLabelEn}
+              </span>
+              <span className="text-[11px] font-mono text-[var(--ink-muted)]">
+                {formatDuration(result.inputTimeSeconds, numeralSystem)}
+              </span>
+            </div>
+          </div>
 
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={handleCopy}
-            className="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1.5"
-            style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
-          >
-            {isCopied ? <Check className="w-3.5 h-3.5 text-[#C8FF4D]" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{isCopied ? t.vdotCard.copied : t.vdotCard.shareResultBtn}</span>
-          </button>
+          {/* 2. Average Pace */}
+          <div className="p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-faint)]">
+              {t.vdotCard.avgPace}
+            </span>
+            <div className="mt-2">
+              <span className="text-base font-black text-[var(--ink)] font-mono block">
+                {formatPace(result.avgPaceSecPerKm, 'km', numeralSystem)}
+              </span>
+              <span className="text-[11px] font-mono text-[var(--ink-muted)]">
+                {formatPace(result.avgPaceSecPerMile, 'mi', numeralSystem)}
+              </span>
+            </div>
+          </div>
 
-          <button
-            onClick={handleSave}
-            disabled={isSaved}
-            className="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow"
-            style={{
-              backgroundColor: isSaved ? '#34D399' : '#C8FF4D',
-              color: '#0B0F14',
-            }}
-          >
-            {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Award className="w-4 h-4" />}
-            <span>{isSaved ? t.vdotCard.recordSaved : t.vdotCard.saveToHistoryBtn}</span>
-          </button>
+          {/* 3. Linear Velocity */}
+          <div className="p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-faint)]">
+              {t.vdotCard.avgSpeed}
+            </span>
+            <div className="mt-2">
+              <span className="text-base font-black text-[var(--ink)] font-mono block">
+                {formatDigits(result.avgSpeedKmh.toFixed(1), numeralSystem)}
+                <span className="text-[10px] font-normal text-[var(--ink-faint)] mr-1 ml-1">km/h</span>
+              </span>
+              <span className="text-[11px] font-mono text-[var(--ink-muted)]">
+                {formatDigits((result.avgSpeedKmh * 0.621371).toFixed(1), numeralSystem)} mph
+              </span>
+            </div>
+          </div>
+
+          {/* 4. Estimated VO2 Cost */}
+          <div className="p-3.5 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-faint)]">
+              VO₂ Cost
+            </span>
+            <div className="mt-2">
+              <span className="text-base font-black text-[var(--ink)] font-mono block">
+                {formatDigits(result.vo2Cost.toFixed(1), numeralSystem)}
+              </span>
+              <span className="text-[10px] font-mono text-[var(--ink-muted)]">
+                mL/kg/min
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

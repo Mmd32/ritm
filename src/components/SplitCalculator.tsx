@@ -5,7 +5,7 @@ import { Language, NumeralSystem, TrainingZone } from '@/types';
 import { calculateSplitTime } from '@/lib/vdot/daniels';
 import { formatDigits, formatDuration, formatPace } from '@/lib/vdot/formatters';
 import { TRANSLATIONS } from '@/lib/translations';
-import { AlertTriangle, Clock, FastForward, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, Clock, FastForward } from 'lucide-react';
 
 interface SplitCalculatorProps {
   zones: TrainingZone[];
@@ -50,162 +50,167 @@ export const SplitCalculator: React.FC<SplitCalculatorProps> = ({
   const isDangerZoneI = selectedZoneCode === 'I' && currentDistanceMeters > 2000;
 
   return (
-    <div id="split-calculator-section" className="rounded-3xl border p-6 sm:p-8" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
+    <div id="split-calculator-section" className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 shadow-xl transition-all duration-200">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
-          <FastForward className="w-5 h-5 text-[#38BDF8]" />
-          <h3 className="text-xl sm:text-2xl font-black text-[#F8FAFC]">
+          <FastForward className="w-5 h-5 text-[var(--accent)]" />
+          <h3 className="text-xl sm:text-2xl font-black text-[var(--ink)]">
             {t.splits.title}
           </h3>
         </div>
-        <p className="text-xs sm:text-sm text-[#94A3B8]">
+        <p className="text-xs sm:text-sm text-[var(--ink-muted)]">
           {t.splits.subtitle}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        {/* Controls */}
-        <div className="lg:col-span-7 space-y-6">
-          {/* Zone Selector */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-2.5">
-              {t.splits.zoneLabel}
-            </label>
-            <div className="grid grid-cols-5 gap-2">
-              {zones.map((z) => {
-                const isSelected = selectedZoneCode === z.code;
-                return (
-                  <button
-                    key={z.code}
-                    onClick={() => setSelectedZoneCode(z.code)}
-                    className={`py-2 px-1 rounded-xl text-xs font-bold border transition-all text-center ${
-                      isSelected
-                        ? 'ring-2 ring-offset-2 ring-offset-[#0B0F14] scale-105'
-                        : 'opacity-70 hover:opacity-100'
-                    }`}
-                    style={{
-                      borderColor: z.color,
-                      backgroundColor: isSelected ? z.bgColor : 'var(--card)',
-                      color: z.color,
-                    }}
-                  >
-                    <span className="block text-sm">{z.code}</span>
-                    <span className="text-[10px] font-normal truncate block">
-                      {language === 'fa' ? z.nameFa.split(' ')[0] : z.nameEn.split(' ')[0]}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Distance Selection */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-2.5">
-              {t.splits.distanceLabel}
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {SPLIT_DISTANCES.map((d) => {
-                const isSelected = !isCustom && selectedMeters === d.meters;
-                return (
-                  <button
-                    key={d.meters}
-                    onClick={() => {
-                      setSelectedMeters(d.meters);
-                      setIsCustom(false);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                      isSelected
-                        ? 'bg-[#C8FF4D] text-[#0B0F14] border-[#C8FF4D]'
-                        : 'border-[var(--border)] text-[#F8FAFC] hover:border-white/20'
-                    }`}
-                    style={{ backgroundColor: isSelected ? '#C8FF4D' : 'var(--card)' }}
-                  >
-                    {formatDigits(d.label, numeralSystem)}
-                  </button>
-                );
-              })}
+      {/* Select Zone Pills */}
+      <div className="mb-6">
+        <label className="block text-xs font-bold uppercase tracking-wider text-[var(--ink-muted)] mb-2">
+          {t.splits.zoneLabel}
+        </label>
+        <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
+          {zones.map((z) => {
+            const isSelected = z.code === selectedZoneCode;
+            return (
               <button
-                onClick={() => setIsCustom(true)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                  isCustom
-                    ? 'bg-[#C8FF4D] text-[#0B0F14] border-[#C8FF4D]'
-                    : 'border-[var(--border)] text-[#F8FAFC] hover:border-white/20'
+                key={z.code}
+                type="button"
+                onClick={() => setSelectedZoneCode(z.code)}
+                className={`py-2 px-2 rounded-xl text-xs font-bold transition-all border text-center ${
+                  isSelected
+                    ? 'bg-[var(--card)] text-[var(--ink)] border-2 shadow-sm'
+                    : 'bg-[var(--card)]/40 text-[var(--ink-muted)] border-[var(--border)] hover:text-[var(--ink)]'
                 }`}
-                style={{ backgroundColor: isCustom ? '#C8FF4D' : 'var(--card)' }}
+                style={{
+                  borderColor: isSelected ? z.color : undefined,
+                }}
               >
-                {language === 'fa' ? 'سفارشی' : 'Custom'}
+                <span className="block font-mono font-black" style={{ color: z.color }}>
+                  {z.code}
+                </span>
+                <span className="text-[10px] truncate block text-[var(--ink)]">
+                  {language === 'fa' ? z.nameFa.split(' ')[0] : z.nameEn.split(' ')[0]}
+                </span>
               </button>
-            </div>
+            );
+          })}
+        </div>
+      </div>
 
-            {isCustom && (
-              <div className="mt-3 flex items-center gap-2">
-                <input
-                  type="number"
-                  min="50"
-                  max="10000"
-                  step="50"
-                  value={customDistanceStr}
-                  onChange={(e) => setCustomDistanceStr(e.target.value)}
-                  className="w-28 px-3 py-1.5 rounded-lg text-xs font-bold num-mono text-center border focus:outline-none focus:border-[#C8FF4D]"
-                  style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
-                />
-                <span className="text-xs text-[#94A3B8] font-semibold">{t.splits.customDistanceLabel}</span>
-              </div>
-            )}
-          </div>
+      {/* Select Distance Presets */}
+      <div className="mb-6">
+        <label className="block text-xs font-bold uppercase tracking-wider text-[var(--ink-muted)] mb-2">
+          {t.splits.distanceLabel}
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {SPLIT_DISTANCES.map((d) => {
+            const isSelected = !isCustom && selectedMeters === d.meters;
+            return (
+              <button
+                key={d.meters}
+                type="button"
+                onClick={() => {
+                  setSelectedMeters(d.meters);
+                  setIsCustom(false);
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border ${
+                  isSelected
+                    ? 'bg-[var(--card)] text-[var(--ink)] border-[var(--accent)] ring-1 ring-[var(--accent)]'
+                    : 'bg-[var(--card)]/40 text-[var(--ink-muted)] border-[var(--border)] hover:text-[var(--ink)]'
+                }`}
+              >
+                {d.label}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            onClick={() => setIsCustom(true)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border ${
+              isCustom
+                ? 'bg-[var(--card)] text-[var(--ink)] border-[var(--accent)] ring-1 ring-[var(--accent)]'
+                : 'bg-[var(--card)]/40 text-[var(--ink-muted)] border-[var(--border)] hover:text-[var(--ink)]'
+            }`}
+          >
+            {language === 'fa' ? 'دلخواه...' : 'Custom...'}
+          </button>
         </div>
 
-        {/* Display Card */}
-        <div className="lg:col-span-5">
-          <div
-            className="rounded-3xl border p-6 text-center relative overflow-hidden"
-            style={{ backgroundColor: 'var(--card)', borderColor: activeZone.borderColor }}
-          >
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <span
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: activeZone.color }}
-              />
-              <span className="text-xs font-bold uppercase tracking-wider text-[#94A3B8]">
-                {language === 'fa' ? activeZone.nameFa : activeZone.nameEn} (
-                {formatDigits(currentDistanceMeters, numeralSystem)} m)
-              </span>
-            </div>
+        {isCustom && (
+          <div className="mt-3 flex items-center gap-2 max-w-xs">
+            <input
+              type="number"
+              min="50"
+              max="10000"
+              step="50"
+              value={customDistanceStr}
+              onChange={(e) => setCustomDistanceStr(e.target.value)}
+              placeholder="500"
+              className="w-28 px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--card)] text-xs font-mono font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
+            />
+            <span className="text-xs text-[var(--ink-faint)] font-mono">meters</span>
+          </div>
+        )}
+      </div>
 
-            <div className="text-xs text-[#94A3B8] mb-1">{t.splits.targetSplitTime}</div>
-            <div
-              className="text-4xl sm:text-5xl font-black num-mono my-2"
-              style={{ color: activeZone.color }}
-            >
-              {formatDuration(splitSeconds, numeralSystem, splitSeconds >= 3600)}
-            </div>
+      {/* Split Result Hero Display */}
+      <div
+        className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] flex flex-col sm:flex-row items-center justify-between gap-6"
+      >
+        <div className="text-center sm:text-left rtl:sm:text-right">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-faint)] block mb-1">
+            {language === 'fa' ? `زمان هدف برای ${currentDistanceMeters} متر` : `Target split for ${currentDistanceMeters}m`}
+          </span>
+          <div className="text-4xl sm:text-5xl font-black font-mono" style={{ color: activeZone.color }}>
+            {formatDuration(splitSeconds, numeralSystem)}
+          </div>
+          <span className="text-xs font-mono text-[var(--ink-muted)] mt-1 block">
+            {language === 'fa' ? 'معادل پیس: ' : 'Equivalent pace: '}
+            <strong className="text-[var(--ink)]">{formatPace(midPaceSecPerKm, 'km', numeralSystem)}</strong>
+          </span>
+        </div>
 
-            <div className="text-xs text-[#94A3B8] mt-2">
-              {t.splits.targetPaceLabel}:{' '}
-              <strong className="text-[#F8FAFC] num-mono">
-                {formatPace(midPaceSecPerKm, 'km', numeralSystem)}
-              </strong>
-            </div>
-
-            {/* Safety Alerts */}
-            {isDangerZoneR && (
-              <div className="mt-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs text-left leading-normal flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{t.splits.safetyWarningHighSpeed}</span>
-              </div>
-            )}
-
-            {isDangerZoneI && (
-              <div className="mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs text-left leading-normal flex items-start gap-2">
-                <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{t.splits.safetyWarningContinuous}</span>
-              </div>
-            )}
+        <div className="flex flex-col gap-2 max-w-xs text-xs text-[var(--ink-muted)]">
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[var(--accent)] shrink-0" />
+            <span>
+              {language === 'fa'
+                ? `شدت زون: ${activeZone.vdotPercentageMin}% – ${activeZone.vdotPercentageMax}% VDOT`
+                : `Zone target: ${activeZone.vdotPercentageMin}% – ${activeZone.vdotPercentageMax}% VDOT`}
+            </span>
           </div>
         </div>
       </div>
+
+      {/* Safety Warnings for Zone R and I */}
+      {isDangerZoneR && (
+        <div className="mt-4 p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-xs font-medium text-rose-400 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+          <div>
+            <strong className="font-bold block mb-1">
+              {language === 'fa' ? 'هشدار فیزیولوژیک شدت تکرار (Zone R):' : 'Physiological Caution (Zone R):'}
+            </strong>
+            {language === 'fa'
+              ? 'تکرارهای سرعتی شدیدتر از توان بیشینه هوازی هستند و هدف آن‌ها اقتصاد دویدن است. تکرار پیوسته بیش از ۶۰۰ متر در این شدت منجر به اسیدوز شدید و تخریب فرم صحیح دویدن می‌شود. فواصل بازیابی کامل الزامی است.'
+              : 'Repetition intervals exceed VO2max pace. Running continuously over 600m at R pace causes severe lactate pooling and mechanics breakdown.'}
+          </div>
+        </div>
+      )}
+
+      {isDangerZoneI && (
+        <div className="mt-4 p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-xs font-medium text-amber-400 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+          <div>
+            <strong className="font-bold block mb-1">
+              {language === 'fa' ? 'توصیه تمرینی اینتروال (Zone I):' : 'Interval Training Guidance (Zone I):'}
+            </strong>
+            {language === 'fa'
+              ? 'اینتروال‌های توان هوازی بیشینه (VO2max) معمولاً در بازه‌های ۲ تا ۵ دقیقه (معمولاً ۴۰۰ تا ۱۲۰۰ متر) اجرا می‌شوند تا بالاترین کارایی را بدون خستگی مفرط داشته باشند.'
+              : 'VO2max intervals are most effective when kept between 2 and 5 minutes (typically 400m to 1200m).'}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

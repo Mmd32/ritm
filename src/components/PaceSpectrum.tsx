@@ -23,53 +23,53 @@ export const PaceSpectrum: React.FC<PaceSpectrumProps> = ({
   const t = TRANSLATIONS[language];
 
   return (
-    <div className="rounded-3xl border p-5 sm:p-7 mb-8" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-6 mb-6 transition-all duration-200">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
         <div>
-          <h3 className="text-base sm:text-lg font-black text-[#F8FAFC]">
+          <h3 className="text-sm sm:text-base font-black text-[var(--ink)]">
             {t.zones.interactiveSpectrumTitle}
           </h3>
-          <p className="text-xs text-[#94A3B8]">
+          <p className="text-xs text-[var(--ink-muted)]">
             {t.zones.spectrumSubtitle}
           </p>
         </div>
-        <div className="text-xs font-semibold text-[#94A3B8] flex items-center gap-2">
-          <span>{language === 'fa' ? 'آرام‌تر (هوازی)' : 'Slower (Aerobic)'}</span>
-          <span className="text-[#C8FF4D]">→</span>
-          <span>{language === 'fa' ? 'سریع‌تر (عصبی-عضلانی)' : 'Faster (Neuromuscular)'}</span>
+        <div className="text-[11px] font-mono text-[var(--ink-faint)] flex items-center gap-2">
+          <span>{language === 'fa' ? 'هوازی پایه' : 'Aerobic Base'}</span>
+          <span className="text-[var(--accent)]">→</span>
+          <span>{language === 'fa' ? 'عصبی‌عضلانی' : 'Neuromuscular'}</span>
         </div>
       </div>
 
-      {/* Interactive Horizontal Bar */}
-      <div className="grid grid-cols-5 gap-1.5 sm:gap-2 p-1.5 rounded-2xl border" style={{ backgroundColor: 'var(--canvas)', borderColor: 'var(--border)' }}>
+      {/* Interactive Horizontal Zone Spectrum */}
+      <div className="grid grid-cols-5 gap-1.5 sm:gap-2 p-1.5 rounded-xl border border-[var(--border)] bg-[var(--card)]/50">
         {zones.map((zone) => {
           const isSelected = selectedZoneCode === zone.code;
           return (
             <button
               key={zone.code}
               onClick={() => onSelectZone(zone.code)}
-              className={`flex flex-col items-center justify-center py-3 px-1 sm:px-2 rounded-xl transition-all duration-200 cursor-pointer ${
-                isSelected ? 'ring-2 ring-offset-2 ring-offset-[#0B0F14] scale-[1.02]' : 'opacity-80 hover:opacity-100'
+              className={`flex flex-col items-center justify-center py-2.5 px-1 sm:px-2 rounded-lg transition-all duration-150 cursor-pointer text-center ${
+                isSelected
+                  ? 'bg-[var(--surface)] border-2 shadow-md scale-[1.02]'
+                  : 'bg-transparent border border-transparent hover:bg-[var(--surface)]/50 opacity-80 hover:opacity-100'
               }`}
               style={{
-                backgroundColor: zone.bgColor,
-                borderColor: zone.color,
-                borderWidth: isSelected ? '2px' : '1px',
+                borderColor: isSelected ? zone.color : 'transparent',
               }}
             >
               <div className="flex items-center gap-1">
                 <span
-                  className="w-2.5 h-2.5 rounded-full"
+                  className="w-2 h-2 rounded-full"
                   style={{ backgroundColor: zone.color }}
                 />
-                <span className="font-black text-sm sm:text-lg" style={{ color: zone.color }}>
+                <span className="font-mono font-black text-xs sm:text-sm" style={{ color: zone.color }}>
                   {zone.code}
                 </span>
               </div>
-              <span className="text-[11px] sm:text-xs font-bold text-[#F8FAFC] truncate max-w-full mt-0.5">
+              <span className="text-[11px] sm:text-xs font-bold text-[var(--ink)] truncate max-w-full mt-0.5">
                 {language === 'fa' ? zone.nameFa.split(' ')[0] : zone.nameEn.split(' ')[0]}
               </span>
-              <span className="text-[10px] sm:text-[11px] font-mono text-[#94A3B8] hidden md:inline-block mt-1">
+              <span className="text-[10px] font-mono text-[var(--ink-muted)] hidden md:inline-block mt-0.5">
                 {formatPaceRange(zone.paceSecPerKmMin, zone.paceSecPerKmMax, 'km', numeralSystem)}
               </span>
             </button>

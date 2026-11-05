@@ -5,7 +5,7 @@ import { Language, NumeralSystem } from '@/types';
 import { formatDigits, formatDuration, formatPace, normalizeDigits, parseTimeString } from '@/lib/vdot/formatters';
 import { paceKmToPaceMile } from '@/lib/vdot/daniels';
 import { TRANSLATIONS } from '@/lib/translations';
-import { Calculator, Clock, Gauge, ArrowRightLeft } from 'lucide-react';
+import { Calculator } from 'lucide-react';
 
 interface RunningToolsProps {
   language: Language;
@@ -69,28 +69,30 @@ export const RunningTools: React.FC<RunningToolsProps> = ({
   const convPaceMile = paceKmToPaceMile(convPaceKm);
 
   return (
-    <div id="running-tools-section" className="rounded-3xl border p-6 sm:p-8" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
+    <div id="running-tools-section" className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 shadow-xl transition-all duration-200">
       {/* Header */}
-      <div className="flex items-center gap-2.5 mb-6">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#38BDF8]/10 border border-[#38BDF8]/30">
-          <Calculator className="w-5 h-5 text-[#38BDF8]" />
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-[var(--card)] border border-[var(--border)]">
+          <Calculator className="w-5 h-5 text-[var(--accent)]" />
         </div>
         <div>
-          <h3 className="text-xl sm:text-2xl font-black text-[#F8FAFC]">
+          <h3 className="text-xl sm:text-2xl font-black text-[var(--ink)]">
             {t.tools.title}
           </h3>
-          <p className="text-xs sm:text-sm text-[#94A3B8]">
+          <p className="text-xs sm:text-sm text-[var(--ink-muted)]">
             {t.tools.subtitle}
           </p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 p-1 rounded-2xl border mb-6 max-w-md" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
+      <div className="flex gap-1.5 p-1 rounded-2xl border border-[var(--border)] bg-[var(--card)] mb-6 max-w-md">
         <button
           onClick={() => setActiveTab('pace')}
           className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'pace' ? 'bg-[#38BDF8] text-[#0B0F14] shadow' : 'text-[#94A3B8] hover:text-[#F8FAFC]'
+            activeTab === 'pace'
+              ? 'bg-[var(--accent)] text-[var(--accent-text)] shadow-sm'
+              : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
           }`}
         >
           {t.tools.tabPace}
@@ -98,7 +100,9 @@ export const RunningTools: React.FC<RunningToolsProps> = ({
         <button
           onClick={() => setActiveTab('time')}
           className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'time' ? 'bg-[#38BDF8] text-[#0B0F14] shadow' : 'text-[#94A3B8] hover:text-[#F8FAFC]'
+            activeTab === 'time'
+              ? 'bg-[var(--accent)] text-[var(--accent-text)] shadow-sm'
+              : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
           }`}
         >
           {t.tools.tabTime}
@@ -106,7 +110,9 @@ export const RunningTools: React.FC<RunningToolsProps> = ({
         <button
           onClick={() => setActiveTab('convert')}
           className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'convert' ? 'bg-[#38BDF8] text-[#0B0F14] shadow' : 'text-[#94A3B8] hover:text-[#F8FAFC]'
+            activeTab === 'convert'
+              ? 'bg-[var(--accent)] text-[var(--accent-text)] shadow-sm'
+              : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
           }`}
         >
           {t.tools.tabConvert}
@@ -118,42 +124,42 @@ export const RunningTools: React.FC<RunningToolsProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] mb-1.5">{t.tools.distanceInput}</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--ink-muted)] mb-1.5">
+                {language === 'fa' ? 'مسافت (کیلومتر):' : 'Distance (km):'}
+              </label>
               <input
                 type="text"
+                inputMode="decimal"
                 value={tool1Distance}
                 onChange={(e) => setTool1Distance(e.target.value)}
-                placeholder="10"
-                className="w-full px-4 py-2.5 rounded-xl text-sm font-bold num-mono border focus:outline-none focus:border-[#38BDF8]"
-                style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
+                className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-base font-mono font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] mb-1.5">{t.tools.timeInput}</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--ink-muted)] mb-1.5">
+                {language === 'fa' ? 'زمان کل (مثال ۵۰:۰۰):' : 'Total Time (e.g. 50:00):'}
+              </label>
               <input
                 type="text"
                 value={tool1TimeStr}
                 onChange={(e) => setTool1TimeStr(e.target.value)}
-                placeholder="00:50:00"
-                className="w-full px-4 py-2.5 rounded-xl text-sm font-bold num-mono border focus:outline-none focus:border-[#38BDF8]"
-                style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
+                className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-base font-mono font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
               />
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl border text-center space-y-4" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-            <div>
-              <div className="text-xs text-[#94A3B8]">{t.tools.resultPace}</div>
-              <div className="text-3xl sm:text-4xl font-black text-[#38BDF8] num-mono my-1">
-                {tool1PaceSec ? formatPace(tool1PaceSec, 'km', numeralSystem) : '--:--'}
-              </div>
+          <div className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] text-center">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-faint)] block mb-1">
+              {t.tools.resultPace}
+            </span>
+            <div className="text-4xl font-black font-mono text-[var(--accent)] mb-2">
+              {tool1PaceSec ? formatPace(tool1PaceSec, 'km', numeralSystem) : '--:--'}
             </div>
-            <div>
-              <div className="text-xs text-[#94A3B8]">{t.tools.resultSpeed}</div>
-              <div className="text-xl font-bold text-[#F8FAFC] num-mono">
-                {tool1SpeedKmh ? `${formatDigits(tool1SpeedKmh.toFixed(2), numeralSystem)} km/h` : '--'}
-              </div>
-            </div>
+            <span className="text-xs font-mono text-[var(--ink-muted)]">
+              {tool1SpeedKmh
+                ? `${formatDigits(tool1SpeedKmh.toFixed(1), numeralSystem)} km/h`
+                : ''}
+            </span>
           </div>
         </div>
       )}
@@ -163,34 +169,40 @@ export const RunningTools: React.FC<RunningToolsProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] mb-1.5">{t.tools.distanceInput}</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--ink-muted)] mb-1.5">
+                {language === 'fa' ? 'مسافت هدف (کیلومتر):' : 'Target Distance (km):'}
+              </label>
               <input
                 type="text"
+                inputMode="decimal"
                 value={tool2Distance}
                 onChange={(e) => setTool2Distance(e.target.value)}
-                placeholder="21.1"
-                className="w-full px-4 py-2.5 rounded-xl text-sm font-bold num-mono border focus:outline-none focus:border-[#38BDF8]"
-                style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
+                className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-base font-mono font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[#94A3B8] mb-1.5">{t.tools.paceInput}</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--ink-muted)] mb-1.5">
+                {language === 'fa' ? 'پیس هدف به ازای هر کیلومتر (مثال ۵:۰۰):' : 'Target Pace per km (e.g. 5:00):'}
+              </label>
               <input
                 type="text"
                 value={tool2PaceStr}
                 onChange={(e) => setTool2PaceStr(e.target.value)}
-                placeholder="05:00"
-                className="w-full px-4 py-2.5 rounded-xl text-sm font-bold num-mono border focus:outline-none focus:border-[#38BDF8]"
-                style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
+                className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-base font-mono font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
               />
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl border text-center" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-            <div className="text-xs text-[#94A3B8]">{t.tools.resultFinishTime}</div>
-            <div className="text-3xl sm:text-4xl font-black text-[#38BDF8] num-mono my-2">
-              {tool2TimeSec ? formatDuration(tool2TimeSec, numeralSystem, true) : '--:--:--'}
+          <div className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] text-center">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-faint)] block mb-1">
+              {t.tools.resultFinishTime}
+            </span>
+            <div className="text-4xl font-black font-mono text-[var(--accent)] mb-2">
+              {tool2TimeSec ? formatDuration(tool2TimeSec, numeralSystem) : '--:--:--'}
             </div>
+            <span className="text-xs text-[var(--ink-muted)]">
+              {language === 'fa' ? 'زمان پیش‌بینی‌شده خط پایان' : 'Estimated finish time'}
+            </span>
           </div>
         </div>
       )}
@@ -198,31 +210,43 @@ export const RunningTools: React.FC<RunningToolsProps> = ({
       {/* Tab 3: Speed Converter */}
       {activeTab === 'convert' && (
         <div className="space-y-6">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 max-w-sm">
             <button
-              onClick={() => { setTool3InputType('pace_km'); setTool3Val('5:00'); }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                tool3InputType === 'pace_km' ? 'bg-[#38BDF8] text-[#0B0F14]' : 'text-[#94A3B8]'
+              onClick={() => {
+                setTool3InputType('pace_km');
+                setTool3Val('5:00');
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+                tool3InputType === 'pace_km'
+                  ? 'bg-[var(--accent)] text-[var(--accent-text)] border-[var(--accent)]'
+                  : 'bg-[var(--card)] text-[var(--ink-muted)] border-[var(--border)]'
               }`}
-              style={{ borderColor: 'var(--border)' }}
             >
               min/km
             </button>
             <button
-              onClick={() => { setTool3InputType('kmh'); setTool3Val('12'); }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                tool3InputType === 'kmh' ? 'bg-[#38BDF8] text-[#0B0F14]' : 'text-[#94A3B8]'
+              onClick={() => {
+                setTool3InputType('kmh');
+                setTool3Val('12.0');
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+                tool3InputType === 'kmh'
+                  ? 'bg-[var(--accent)] text-[var(--accent-text)] border-[var(--accent)]'
+                  : 'bg-[var(--card)] text-[var(--ink-muted)] border-[var(--border)]'
               }`}
-              style={{ borderColor: 'var(--border)' }}
             >
               km/h
             </button>
             <button
-              onClick={() => { setTool3InputType('mph'); setTool3Val('7.5'); }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                tool3InputType === 'mph' ? 'bg-[#38BDF8] text-[#0B0F14]' : 'text-[#94A3B8]'
+              onClick={() => {
+                setTool3InputType('mph');
+                setTool3Val('7.5');
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+                tool3InputType === 'mph'
+                  ? 'bg-[var(--accent)] text-[var(--accent-text)] border-[var(--accent)]'
+                  : 'bg-[var(--card)] text-[var(--ink-muted)] border-[var(--border)]'
               }`}
-              style={{ borderColor: 'var(--border)' }}
             >
               mph
             </button>
@@ -233,31 +257,28 @@ export const RunningTools: React.FC<RunningToolsProps> = ({
               type="text"
               value={tool3Val}
               onChange={(e) => setTool3Val(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl text-base font-bold num-mono border focus:outline-none focus:border-[#38BDF8]"
-              style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
+              className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-xl font-mono font-bold text-[var(--ink)] focus:outline-none focus:border-[var(--accent)]"
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            <div className="p-3.5 rounded-xl border text-center" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-              <div className="text-[11px] text-[#94A3B8]">{t.tools.convertedPaceKm}</div>
-              <div className="text-base sm:text-lg font-bold text-[#F8FAFC] num-mono mt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] text-center">
+              <span className="text-[10px] uppercase font-bold text-[var(--ink-faint)] block mb-1">Pace / km</span>
+              <strong className="text-xl font-mono font-black text-[var(--ink)]">
                 {formatPace(convPaceKm, 'km', numeralSystem)}
-              </div>
+              </strong>
             </div>
-
-            <div className="p-3.5 rounded-xl border text-center" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-              <div className="text-[11px] text-[#94A3B8]">{t.tools.convertedPaceMile}</div>
-              <div className="text-base sm:text-lg font-bold text-[#F8FAFC] num-mono mt-1">
+            <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] text-center">
+              <span className="text-[10px] uppercase font-bold text-[var(--ink-faint)] block mb-1">Speed (km/h)</span>
+              <strong className="text-xl font-mono font-black text-[var(--accent)]">
+                {formatDigits(convSpeedKmh.toFixed(1), numeralSystem)}
+              </strong>
+            </div>
+            <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] text-center">
+              <span className="text-[10px] uppercase font-bold text-[var(--ink-faint)] block mb-1">Pace / mile</span>
+              <strong className="text-xl font-mono font-black text-[var(--ink)]">
                 {formatPace(convPaceMile, 'mi', numeralSystem)}
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl border text-center" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-              <div className="text-[11px] text-[#94A3B8]">{t.tools.convertedSpeedKmh}</div>
-              <div className="text-base sm:text-lg font-bold text-[#38BDF8] num-mono mt-1">
-                {formatDigits(convSpeedKmh.toFixed(2), numeralSystem)} km/h
-              </div>
+              </strong>
             </div>
           </div>
         </div>
@@ -265,4 +286,3 @@ export const RunningTools: React.FC<RunningToolsProps> = ({
     </div>
   );
 };
-

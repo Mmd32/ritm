@@ -167,6 +167,7 @@ export default function Home() {
           selectedZoneCode={selectedZoneCode}
           language={language}
           numeralSystem={numeralSystem}
+          onSelectZone={setSelectedZoneCode}
         />
 
         {/* Personalized Deterministic Coaching Insights */}

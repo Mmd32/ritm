@@ -27,13 +27,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
   ];
 
   return (
-    <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-lg border-t px-2 py-2 flex items-center justify-around"
-      style={{
-        backgroundColor: 'rgba(11, 15, 20, 0.92)',
-        borderColor: 'var(--border)',
-      }}
-    >
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-xl border-t border-[var(--border)] bg-[var(--surface)]/90 px-2 py-2 flex items-center justify-around transition-colors">
       {items.map((item) => {
         const Icon = item.icon;
         const isActive = activeSection === item.id;
@@ -41,12 +35,14 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
           <button
             key={item.id}
             onClick={() => onNavigate(item.id)}
-            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${
-              isActive ? 'text-[#C8FF4D]' : 'text-[#94A3B8] hover:text-[#F8FAFC]'
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+              isActive
+                ? 'text-[var(--accent)] font-bold'
+                : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
             }`}
           >
             <Icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110' : ''}`} />
-            <span className={`text-[10px] mt-1 font-semibold ${isActive ? 'font-black' : ''}`}>
+            <span className="text-[10px] mt-1 font-semibold">
               {item.label}
             </span>
           </button>
@@ -55,4 +51,3 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
     </nav>
   );
 };
-
