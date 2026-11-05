@@ -79,3 +79,4 @@ export function generateTrainingInsights(result: VDOTResult): CoachingInsight[] 
 
   return insights;
 }
+

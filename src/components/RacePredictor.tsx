@@ -146,3 +146,4 @@ export const RacePredictor: React.FC<RacePredictorProps> = ({
     </div>
   );
 };
+

@@ -170,3 +170,4 @@ export const AcademySection: React.FC<AcademySectionProps> = ({
     </div>
   );
 };
+

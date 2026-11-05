@@ -101,3 +101,4 @@ export interface AcademyArticle {
   keyTakeawaysFa: string[];
   keyTakeawaysEn: string[];
 }
+

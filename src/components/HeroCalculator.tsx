@@ -490,3 +490,4 @@ export const HeroCalculator: React.FC<HeroCalculatorProps> = ({
     </section>
   );
 };
+

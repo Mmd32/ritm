@@ -22,3 +22,4 @@ declare module 'canvas-confetti' {
   function confetti(options?: ConfettiOptions): Promise<null> | null;
   export default confetti;
 }
+

@@ -55,3 +55,4 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
     </nav>
   );
 };
+

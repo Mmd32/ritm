@@ -141,3 +141,4 @@ export function importHistoryFromJSON(jsonString: string): { success: boolean; c
     return { success: false, count: 0, error: 'خطا در خواندن فایل JSON.' };
   }
 }
+

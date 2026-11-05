@@ -166,3 +166,4 @@ export function getConfidenceBadge(
     descriptionEn: 'Estimated efforts lack strict timing accuracy; start with the slower end of training ranges.',
   };
 }
+

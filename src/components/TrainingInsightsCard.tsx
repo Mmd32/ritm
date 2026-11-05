@@ -79,3 +79,4 @@ export const TrainingInsightsCard: React.FC<TrainingInsightsCardProps> = ({
     </div>
   );
 };
+

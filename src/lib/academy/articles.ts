@@ -278,3 +278,4 @@ Three guiding tenets govern sustainable VDOT progression:
 This balanced distribution elevates VO2 Max, Lactate Threshold, and Running Economy simultaneously.`,
   },
 ];
+
