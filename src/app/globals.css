@@ -1,0 +1,89 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --canvas: #0b0f14;
+  --surface: #151b23;
+  --card: #1d2630;
+  --card-hover: #24303d;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(200, 255, 77, 0.5);
+  --accent: #c8ff4d;
+  --accent-foreground: #0b0f14;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --zone-e: #38bdf8;
+  --zone-m: #34d399;
+  --zone-t: #fbbf24;
+  --zone-i: #fb923c;
+  --zone-r: #f43f5e;
+}
+
+[data-theme="light"] {
+  --canvas: #f8fafc;
+  --surface: #ffffff;
+  --card: #f1f5f9;
+  --card-hover: #e2e8f0;
+  --border: rgba(15, 23, 42, 0.1);
+  --border-focus: rgba(77, 124, 15, 0.6);
+  --accent: #4d7c0f;
+  --accent-foreground: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-faint: #94a3b8;
+  --zone-e: #0284c7;
+  --zone-m: #059669;
+  --zone-t: #d97706;
+  --zone-i: #ea580c;
+  --zone-r: #e11d48;
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--text-main);
+  font-family: 'Vazirmatn', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+[dir="rtl"] {
+  font-feature-settings: "ss01", "ss02";
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
+
+/* Tabular figures for athletic numbers */
+.num-mono {
+  font-family: 'Inter', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* High-intent glow for performance cards */
+.accent-glow {
+  box-shadow: 0 0 35px -5px rgba(200, 255, 77, 0.18);
+}
+
+[data-theme="light"] .accent-glow {
+  box-shadow: 0 4px 20px -2px rgba(77, 124, 15, 0.15);
+}
